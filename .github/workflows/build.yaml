@@ -1,0 +1,108 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+jobs:
+  build:
+    name: Build, Push and Deploy Image
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: testdb
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -ptestpass --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: mysql://testuser:testpass@127.0.0.1:3306/testdb
+      #Write database
+      TEST_WRITE_DB_DIALECT: mysql
+      TEST_WRITE_DB_USER: testuser
+      TEST_WRITE_DB_HOST: 127.0.0.1
+      TEST_WRITE_DB_PASS: testpass
+      TEST_WRITE_DB_NAME: testdb
+      TEST_WRITE_DB_PORT: 3306
+
+      #Read database
+      TEST_READ_DB_DIALECT: mysql
+      TEST_READ_DB_USER: testuser
+      TEST_READ_DB_HOST: 127.0.0.1
+      TEST_READ_DB_PASS: testpass
+      TEST_READ_DB_NAME: testdb
+      TEST_READ_DB_PORT: 3306
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for accurate analysis history
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run Prisma Migrate (or db push)
+        run: npx prisma db push
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run tests with coverage
+        run: yarn test --coverage
+        env:
+          NODE_ENV: test
+          APP_ENV: test
+          DATABASE_URL: mysql://testuser:testpass@127.0.0.1:3306/testdb
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  deploy:
+    name: Deploy on Push to develop (merge)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: gwiza_template
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build Docker Image
+        run: docker build --no-cache -t $IMAGE_NAME:latest .
+
+      - name: Login to GitHub Packages
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: benjlevesque/short-sha@v2.2
+        id: short-sha
+        with:
+          length: 6
+
+      - name: Create & Push Docker Image to Github Registry
+        env:
+          RELEASE_VERSION: ${{ steps.short-sha.outputs.sha }}
+        run: |-
+          docker tag $IMAGE_NAME:latest ghcr.io/mvend/gwiza_template/$IMAGE_NAME:$RELEASE_VERSION
+          docker push ghcr.io/mvend/gwiza_template/$IMAGE_NAME:$RELEASE_VERSION

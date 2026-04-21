@@ -1,0 +1,23 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 7780:7780
+    depends_on: db
+  db:
+    image: mysql
+    restart: always
+    user: root
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/mysql/data
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+
+volumes:
+  db-data:
