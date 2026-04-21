@@ -3,21 +3,25 @@ import { dbConfig } from "./config";
 
 const NODE_ENV = process.env.APP_ENV || "development";
 
-export const prismaWrite = new PrismaClient({
+export const prismaWrite = new PrismaClient(
+  {
   datasources: {
     db: {
       url: dbConfig.writeDBConnString,
     },
   },
-});
+}
+);
 
-export const prismaRead = new PrismaClient({
+export const prismaRead = new PrismaClient(
+  {
   datasources: {
     db: {
       url: dbConfig.readDBConnString,
     },
   },
-});
+}
+);
 
 export const verifyDbConnections = async (write = prismaWrite, read = prismaRead) => {
   try {

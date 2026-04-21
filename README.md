@@ -1,7 +1,10 @@
-# MVEND PROJECT TEMPLATE
+# SCHOOL MANAGEMENT SYSTEM
 
-This template serves as the company's best practices and coding standards, whichever standard agreed on should be documented here.
-Every project should follow this standard
+This project defines the structure, coding standards, and best practices for the school management system .
+
+It manages core entities such as students, teachers, classes, and related academic data.
+
+All development in this project should follow the defined standards and conventions.
 
 [![CI/CD](https://github.com/MVend/gwiza_template/actions/workflows/build.yaml/badge.svg)](https://github.com/MVend/gwiza_template/actions/workflows/build.yaml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gwiza_template&metric=alert_status&token=d9f9da23b754133bf67e04fb1254b74135e7f866)](https://sonarcloud.io/summary/new_code?id=gwiza_template)
