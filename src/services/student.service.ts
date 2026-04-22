@@ -10,15 +10,30 @@ export class StudentService {
     this.studentRepository = new PStudentRepository();
   }
   async createStudent(data: StudentsAttributes): Promise<Student> {
-    const newMember = await this.studentRepository.create(data);
-    return newMember;
+    const newStudent = await this.studentRepository.create(data);
+    return newStudent;
   }
+
+  async getAllStudents(): Promise<Student[]> {
+    return await this.studentRepository.getAll();
+  }
+  
   async getStudentById(studentId: number): Promise<Student | NotFoundError> {
-    const member = await this.studentRepository.getStudentById(studentId);
-    if (!member) {
+    const student = await this.studentRepository.getStudentById(studentId);
+    if (!student) {
       logger.error("Student not found");
       throw new NotFoundError("Student not found");
     }
-    return member;
+    return student;
+  }
+
+  async updateStudent(studentId: number, data: StudentsAttributes): Promise<Student | NotFoundError> {
+    const updateStudent = await this.studentRepository.updateStudent(studentId, data);
+    if (!updateStudent) {
+      logger.error("Student not found");
+      throw new NotFoundError("Student not found");
+    }
+    return updateStudent;
+
   }
 }
