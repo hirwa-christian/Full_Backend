@@ -13,19 +13,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Signup {
+model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
+  name      String
   password  String
   createdAt DateTime @default(now())
+}
+
+model Class {
+  id        Int      @id @default(autoincrement())
+  name            String
+  createdAt       DateTime @default(now())
+  students        Student[]
 }
 
 model Student {
   id        Int      @id @default(autoincrement())
   name      String
   age       Int
-  class     String
+  classId  Int
   createdAt DateTime @default(now())
+  class Class @relation(fields: [classId], references: [id])
+  atendances Attendance[]
+  grades Grade[]
+  fees Fees[]
 }
 
 model Teacher {
@@ -42,5 +54,32 @@ model Course {
   teacherId Int
   teacher  Teacher @relation(fields: [teacherId], references: [id])
   createdAt DateTime @default(now())
+  grades Grade[]
   
+}
+
+model Attendance {
+  id        Int     @id @default(autoincrement())
+  studentId Int
+  date      DateTime
+  status    String
+  student   Student @relation(fields: [studentId], references: [id])
+}
+
+model Grade {
+  id       Int    @id @default(autoincrement())
+  studentId Int
+  courseId  Int
+  grade     String
+  student   Student @relation(fields: [studentId], references: [id])
+  course    Course  @relation(fields: [courseId], references: [id])
+}
+
+model Fees{
+  id        Int     @id @default(autoincrement())
+  studentId Int
+  amount    Float
+  dueDate   DateTime
+  status    String
+  student   Student @relation(fields: [studentId], references: [id])
 }

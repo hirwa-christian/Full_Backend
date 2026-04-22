@@ -1,6 +1,6 @@
 export interface StudentsAttributes {
   name: string;
   age: number;
-  class: string;
+  classId: number;
   createdAt: Date;
 }

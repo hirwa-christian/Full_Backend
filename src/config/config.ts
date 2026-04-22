@@ -38,7 +38,6 @@ const createDbConfig = (envPrefix: string, typePrefix: string): DbEnv => {
   process.env.DATABASE_URL = connectionString;
   return { connectionString };
 };
-console.log("Database connection string set to:", process.env.DATABASE_URL);
 
 const createRedisConfig = (envPrefix: string, redisType: "READ" | "WRITE"): RedisEnv => {
   const password = process.env[`${envPrefix}_${redisType}_REDIS_PASSWORD`] ?? "";
