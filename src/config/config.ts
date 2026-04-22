@@ -28,16 +28,17 @@ const appEnv = process.env.APP_ENV?.toLowerCase() || "development";
 export const envPrefix = envMap[appEnv] || "DEV";
 
 const createDbConfig = (envPrefix: string, typePrefix: string): DbEnv => {
-  const dialect = process.env[`${envPrefix}_${typePrefix}_DB_DIALECT`] || "mysql";
-  const host = process.env[`${envPrefix}_${typePrefix}_DB_HOST`] || "";
-  const port = process.env[`${envPrefix}_${typePrefix}_DB_PORT`] || "3306";
-  const user = process.env[`${envPrefix}_${typePrefix}_DB_USER`] || "";
-  const password = process.env[`${envPrefix}_${typePrefix}_DB_PASS`] || "";
-  const database = process.env[`${envPrefix}_${typePrefix}_DB_NAME`] || "";
+  const dialect = process.env[`DB_DIALECT`] || "postgresql";
+  const host = process.env[`DB_HOST`] || "";
+  const port = process.env[`DB_PORT`] || "3306";
+  const user = process.env[`DB_USER`] || "";
+  const password = process.env[`DB_PASS`] || "";
+  const database = process.env[`DB_NAME`] || "";
   const connectionString = `${dialect}://${user}:${password}@${host}:${port}/${database}`;
   process.env.DATABASE_URL = connectionString;
   return { connectionString };
 };
+console.log("Database connection string set to:", process.env.DATABASE_URL);
 
 const createRedisConfig = (envPrefix: string, redisType: "READ" | "WRITE"): RedisEnv => {
   const password = process.env[`${envPrefix}_${redisType}_REDIS_PASSWORD`] ?? "";
