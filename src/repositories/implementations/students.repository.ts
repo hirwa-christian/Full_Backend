@@ -12,11 +12,11 @@ export class PStudentRepository implements IStudentRepository {
   }
   async getStudentById(id: number): Promise<Student | null> {
     return await prismaRead.student.findUnique({ where: { id } });
-  
   }
   async updateStudent(StudentId: number, data: CreateStudentDto): Promise<Student | null> {
     return await prismaWrite.student.update({
-      where: { id: StudentId}, data
-    })
+      where: { id: StudentId },
+      data,
+    });
   }
 }
