@@ -14,11 +14,11 @@ export async function studentRoutes(fastify: FastifyInstance) {
     // { preHandler: [authMiddleware, validateCreateMember] },
     asyncWrapper(controller.create.bind(controller)),
   );
-  fastify.get("/", asyncWrapper(controller.getAll.bind(controller)))
+  fastify.get("/", asyncWrapper(controller.getAll.bind(controller)));
   fastify.get(
     "/:studentId",
     // { preHandler: [authMiddleware] },
     asyncWrapper(controller.getById.bind(controller)),
   );
-  fastify.put("/:studentId", asyncWrapper(controller.update.bind(controller)))
+  fastify.put("/:studentId", asyncWrapper(controller.update.bind(controller)));
 }

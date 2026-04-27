@@ -17,7 +17,7 @@ export class StudentService {
   async getAllStudents(): Promise<Student[]> {
     return await this.studentRepository.getAll();
   }
-  
+
   async getStudentById(studentId: number): Promise<Student | NotFoundError> {
     const student = await this.studentRepository.getStudentById(studentId);
     if (!student) {
@@ -27,13 +27,15 @@ export class StudentService {
     return student;
   }
 
-  async updateStudent(studentId: number, data: StudentsAttributes): Promise<Student | NotFoundError> {
+  async updateStudent(
+    studentId: number,
+    data: StudentsAttributes,
+  ): Promise<Student | NotFoundError> {
     const updateStudent = await this.studentRepository.updateStudent(studentId, data);
     if (!updateStudent) {
       logger.error("Student not found");
       throw new NotFoundError("Student not found");
     }
     return updateStudent;
-
   }
 }

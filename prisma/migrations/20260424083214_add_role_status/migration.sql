@@ -1,9 +1,16 @@
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('ADMIN', 'TEACHER', 'STUDENT');
+
+-- CreateEnum
+CREATE TYPE "AttendanceStatus" AS ENUM ('PRESENT', 'ABSENT', 'LATE');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'STUDENT',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -54,7 +61,7 @@ CREATE TABLE "Attendance" (
     "id" SERIAL NOT NULL,
     "studentId" INTEGER NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
-    "status" TEXT NOT NULL,
+    "status" "AttendanceStatus" NOT NULL DEFAULT 'PRESENT',
 
     CONSTRAINT "Attendance_pkey" PRIMARY KEY ("id")
 );

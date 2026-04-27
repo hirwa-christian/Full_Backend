@@ -1,4 +1,4 @@
 export interface ClassAttributes {
-    name: string;
-    createdAt: Date;
+  name: string;
+  createdAt: Date;
 }

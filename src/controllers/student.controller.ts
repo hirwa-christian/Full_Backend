@@ -5,7 +5,6 @@ import { ResponseHandler } from "../utils/response";
 import { logger } from "../utils/logger";
 
 export class StudentController {
-  
   private readonly createStudentService: StudentService;
 
   constructor(createStudentService: StudentService) {
@@ -33,7 +32,7 @@ export class StudentController {
   }
 
   async update(request: FastifyRequest, reply: FastifyReply): Promise<void> {
-    const { studentId} = request.params as { studentId: string};
+    const { studentId } = request.params as { studentId: string };
     const dto = request.body as CreateStudentDto;
     const student = await this.createStudentService.updateStudent(Number(studentId), dto);
     logger.info("Student updated successfully");
